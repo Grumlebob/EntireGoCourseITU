@@ -1,0 +1,30 @@
+10:15:35 I am peer with Id: 5000
+10:15:35 Replication role: BACKUP 
+10:15:35 Leader is now: 5001 
+10:15:36 Welcome to the distributed dictionary
+10:15:36 Write 'add <key> <value>' to put a key-value pair in the dictionary
+10:15:36 Write 'read <key>' to get the value of a key
+10:15:36 Write 'printrequests' to print map of requests already handled
+10:15:36 Write 'printdictionary' to print the distributed dictionary
+10:15:36 --- Printing maps on all nodes. Maps should be equal ---
+10:15:36 Size of distributed dictionary: 5. Should be: 5
+10:15:36 Size of unique requests handled map: 10. Should be: 10
+10:15:36 --- Printing Distributed Dictionary ---
+10:15:36 Word: word0, Definition: definition0New
+10:15:36 Word: word1, Definition: definition1New
+10:15:36 Word: word2, Definition: definition2New
+10:15:36 Word: word3, Definition: definition3New
+10:15:36 Word: word4, Definition: definition4New
+10:15:36 --- Printing requests already handled ---
+10:15:36 Unique Request Id: 95001, Response: true
+10:15:36 Unique Request Id: 105001, Response: true
+10:15:36 Unique Request Id: 15001, Response: true
+10:15:36 Unique Request Id: 25001, Response: true
+10:15:36 Unique Request Id: 35001, Response: true
+10:15:36 Unique Request Id: 55001, Response: true
+10:15:36 Unique Request Id: 75001, Response: true
+10:15:36 Unique Request Id: 85001, Response: true
+10:15:36 Unique Request Id: 45001, Response: true
+10:15:36 Unique Request Id: 65001, Response: true
+10:15:36 --- Demo done ---
+10:16:19 Replication role: PRIMARY 

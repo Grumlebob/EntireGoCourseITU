@@ -1,0 +1,64 @@
+exam: https://github.itu.dk/maca/DiSys2021_exam
+
+I hereby declare that this submission was created in its entirety by me and only me.
+I have recycled structural code from Mini Project 3 - Distributed Systems
+½
+multiple choice:
+Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10
+1  2  3  1  2  1  2  3  2  1
+
+implementation:
+is in ./server, ./client/ and ./DistributedHashtable/.
+
+first run the two servers by using the command `go run ./server/main.go` in two terminals then type in 50001 and 50002 respectively when prompted.
+then run any number of clients by using the command `go run ./client/main.go` in seperate terminals. 
+the clients will then send random requests to the servers.
+
+to test crash you can try stopping one of the processes using ctrl + c to interrupt,
+if you interupt a server the client(s) should spit out some warnings but continue with no problems,
+if you interupt a client the server might spit out a warning but should continue running.
+
+I do not know if it works on Windows, I have only tested on linux.
+
+implementation discussion:
+1.  What system model are you assuming in your implementation. Write a full description:
+    I am assuming a system model with only crash failures.
+    I won't assume that servers or clients can recover after crashes, a new one would have to be started up and state somehow transferred.
+    i will assume an asynchronous network and thus i can not assume any upper bound on latency.
+
+2.  What is the minimal number of nodes in your system to fulfill the requirements? Why?
+    I need at least 2 servers otherwise there is no replication and if there is no replication my system can not withstand crash failures.
+    if there is 2 or more servers i can tolerate at least 1 failure:
+    if a server crashes clients continue comunicating with the replica(s)
+    if a client crashes all the other clients can still comunicate with all servers.
+
+3.  Explain how your system recovers from crash failure.
+    if a client gets an error when comunicating with one of the servers the server is presumed crashed.
+    if a server gets an error when comunicating with one of the clients the client is presumed crashed.
+    
+    nothing is done(at least programmatically) to recover the crashed server or client.
+
+4.  Explain how you achieve the Property 1 - Repeatable Read.
+    since i use a map as the underlying datastructure and it in itself overholds the repeatable read property i just
+    have to ensure i always read from the same map or all the maps i could read from are syncronised.
+    I do this by making sure to have a lock on all operational servers when calling put, 
+    in this way all server states are the same after any put operation.
+
+5.  Explain how you achieve the Property 2 - Initialization to zero.
+    I do nothing different, since the underlying datastructure is a map and (in go at least) it will return 0 if the
+    key is not in the map by default.
+
+6.  Explain how you achieve the Property 3 - Consistency.
+    since get does not change any state it is enough to comunicate with a single server (main or replica) 
+    since they are syncronised by the put protocol.
+
+    and as long as we get the lock we can gaurantee that no servers hashtable is changed while we try to get.
+
+7.  Explain how you achieve the Property 4 - Liveness requirement.
+    If a request fails the client can just retry but it realy should not happen unless it is the input to the function making 
+    the underlying go map fail or both main and replica have crashed. 
+    this is because all servers are queried every put and as long as at least one of them answer we do not respond with false. 
+
+8.  Explain how you achieve the Property 5 - Reliability requirement.
+    I have at least one server replitating the main servers state through active replitaion, and all of them respond to a request 
+    so if one of them don't respond it is presumed crashed and any of the other servers responses are used.

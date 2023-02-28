@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package protos;
+option go_package = "https://github.com/Grumlebob/GoLangAssignment2HardgRPC/tree/master/protos";
+
+
+service ChatService {
+    rpc GetHeader (Message) returns (Message) {}
+}
+
+message Message {
+    string Text = 1;
+    int32 Ack = 2;
+    int32 Seq = 3;
+}

@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package grpc;
+import "google/protobuf/empty.proto";
+
+import "google/protobuf/timestamp.proto";  
+
+option go_package = "jacob.com/go-grpc;go_grpc";
+
+service Node {
+    //---For passive replication---
+    //Heartbeat from primary to backups:
+    rpc heartbeat (HeartbeatTimestamp) returns (google.protobuf.Empty) {}
+    //Announce leader:
+    rpc coordinator (CoordinatorPort) returns (google.protobuf.Empty) {}
+    //Replication:
+    rpc handleAgreementAndReplicationFromLeader (Replicate) returns (google.protobuf.Empty) {}
+    //---For distributed dictionary---
+    rpc add (DictionaryAdd) returns (AddResult) {}
+    rpc read (ReadWord) returns (ReadResult) {}
+}
+
+
+message DictionaryAdd {
+    string word = 1;
+    string definition = 2;
+    int32 uniqueIdentifierForRequest = 3;
+}
+
+message AddResult {
+    bool result = 1;
+}
+
+message ReadWord {
+    string word = 1;
+}
+
+message ReadResult {
+    string definition = 1;
+}
+
+message HeartbeatTimestamp {
+    google.protobuf.Timestamp timestamp = 1;
+}
+
+message CoordinatorPort {
+    int32 leaderPort = 1;
+}
+
+message Replicate {
+    string addWord = 1;
+    string addDefinition = 2;
+    bool responseForRequest = 3;
+    int32 uniqueIdentifierForRequest = 4;
+}
+
+//Important command, when updating proto file:
+//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative grpc/interface.proto
+

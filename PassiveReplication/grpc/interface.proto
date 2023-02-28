@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package grpc;
+import "google/protobuf/empty.proto";
+
+import "google/protobuf/timestamp.proto";  
+
+option go_package = "jacob.com/go-grpc;go_grpc";
+
+//Important command, when updating proto file:
+//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative grpc/interface.proto
+
+service Node {
+    //Heartbeat:
+    rpc heartbeat (HeartbeatTimestamp) returns (google.protobuf.Empty) {}
+    //Announce leader:
+    rpc coordinator (CoordinatorPort) returns (google.protobuf.Empty) {}
+    //Replication:
+    rpc handleAgreementAndReplicationFromLeader (Replicate) returns (google.protobuf.Empty) {}
+    //Broadcast
+    rpc broadcastMessage (MessageString) returns (google.protobuf.Empty) {}
+    //Auction
+    rpc bid (Bid) returns (Acknowledgement) {}
+    rpc result (google.protobuf.Empty) returns (Outcome) {}
+
+}
+
+message HeartbeatTimestamp {
+    google.protobuf.Timestamp timestamp = 1;
+}
+
+message CoordinatorPort {
+    int32 leaderPort = 1;
+}
+
+message Replicate {
+    string auctionStatus = 1;
+    int32 highestBidOnCurrentAuction = 2;
+    string responseForRequest = 3;
+    int32 uniqueIdentifierForRequest = 4;
+    string currentItem = 5;
+    int32 winnerId = 6;
+}
+
+message MessageString {
+    string text = 1;
+}
+
+
+message Acknowledgement {
+    string ack = 1;
+}
+
+message Bid {
+    int32 clientId = 1;
+    int32 uniqueBidId = 2;
+    int32 amount = 3;
+}
+
+message Outcome {
+    string auctionStatus = 1;
+    int32 highestBid = 2;
+}

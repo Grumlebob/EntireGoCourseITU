@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package protos;
+option go_package = "https://github.com/Grumlebob/Assignment3ChittyChat/tree/master/protos";
+//for exam we can use assignment3chitty/protos instead of github
+
+
+//Important commands:
+//When updating proto file:
+//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative protos/time.proto
+
+//When changing server file:
+//Commit and push
+//docker build -t test --no-cache .
+//docker run -p 9080:9080 -tid test
+
+
+//When changing client:
+//go run .
+
+
+//A server-side streaming RPC where the client sends a request to the server and gets a stream to read a sequence of messages back. The client reads from the returned stream until there are no more messages
+
+//A client-side streaming RPC where the client writes a sequence of messages and sends them to the server, again using a provided stream. Once the client has finished writing the messages, it waits for the server to read them all and return its response
+
+//A bidirectional streaming RPC where both sides send a sequence of messages using a read-write stream. The two streams operate independently, so clients and servers can read and write in whatever order they like: for example, the server could wait to receive all the client messages before writing its responses, or it could alternately read a message then write a message, or some other combination of reads and writes. The order of messages in each stream is preserved
+service ChatService {
+    rpc GetClientId(ClientRequest) returns (ServerResponse) {}
+    rpc JoinChat(ClientRequest) returns (stream ChatMessage) {}
+    rpc LeaveChat(ClientRequest) returns (ServerResponse) {}
+    rpc PublishMessage(ClientRequest) returns (ServerResponse) {}
+}
+
+message ChatMessage {
+    string message = 1;
+    int32 userid = 2;
+    int64 lamportTime = 3;
+}
+
+message ClientRequest {
+    ChatMessage chatMessage = 1;
+}
+
+message ServerResponse {
+    ChatMessage chatMessage = 1;
+}

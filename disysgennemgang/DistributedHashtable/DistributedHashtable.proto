@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package DistributedHashtable;
+
+option go_package = "example.com/go-DistributedHashtable;go_DistributedHashtable";
+
+service Hashtable {
+  rpc Put (stream PutMsg) returns (stream PutRsp) {}
+  rpc Get (GetMsg) returns (GetRsp) {}
+}
+
+message PutMsg {
+  int32 Key = 1;
+  int32 Value = 2;
+}
+
+message PutRsp {
+  bool Succes = 1;
+}
+
+message GetMsg {
+  int32 Key = 1;
+}
+
+message GetRsp {
+  int32 Value = 1;
+}
+
+

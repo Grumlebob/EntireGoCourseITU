@@ -1,0 +1,45 @@
+14:28:39 I am peer with Id: 5001
+14:28:39 Replication role: PRIMARY 
+14:28:39 Welcome to the distributed dictionary
+14:28:39 Write 'add <key> <value>' to put a key-value pair in the dictionary
+14:28:39 Write 'read <key>' to get the value of a key
+14:28:39 Write 'printrequests' to print map of requests already handled
+14:28:39 Write 'printdictionary' to print the distributed dictionary
+14:28:39 --- Adding demo data ---
+14:28:39 Read word: word0. Had: definition0. Expected: definition0
+14:28:39 Read word: word0. Old: definition0. New: definition0New. Expected: definition0New
+14:28:39 Success - Latest value was read
+14:28:39 Read word: word1. Had: definition1. Expected: definition1
+14:28:39 Read word: word1. Old: definition1. New: definition1New. Expected: definition1New
+14:28:39 Success - Latest value was read
+14:28:39 Read word: word2. Had: definition2. Expected: definition2
+14:28:39 Read word: word2. Old: definition2. New: definition2New. Expected: definition2New
+14:28:39 Success - Latest value was read
+14:28:39 Read word: word3. Had: definition3. Expected: definition3
+14:28:39 Read word: word3. Old: definition3. New: definition3New. Expected: definition3New
+14:28:39 Success - Latest value was read
+14:28:39 Read word: word4. Had: definition4. Expected: definition4
+14:28:39 Read word: word4. Old: definition4. New: definition4New. Expected: definition4New
+14:28:39 Success - Latest value was read
+14:28:39 --- Printing maps on all nodes. Maps should be equal ---
+14:28:39 Size of distributed dictionary: 5. Should be: 5
+14:28:39 Size of unique requests handled map: 10. Should be: 10
+14:28:39 --- Printing Distributed Dictionary ---
+14:28:39 Word: word0, Definition: definition0New
+14:28:39 Word: word1, Definition: definition1New
+14:28:39 Word: word2, Definition: definition2New
+14:28:39 Word: word3, Definition: definition3New
+14:28:39 Word: word4, Definition: definition4New
+14:28:39 --- Printing requests already handled ---
+14:28:39 Unique Request Id: 35001, Response: true
+14:28:39 Unique Request Id: 45001, Response: true
+14:28:39 Unique Request Id: 85001, Response: true
+14:28:39 Unique Request Id: 95001, Response: true
+14:28:39 Unique Request Id: 15001, Response: true
+14:28:39 Unique Request Id: 25001, Response: true
+14:28:39 Unique Request Id: 55001, Response: true
+14:28:39 Unique Request Id: 65001, Response: true
+14:28:39 Unique Request Id: 75001, Response: true
+14:28:39 Unique Request Id: 105001, Response: true
+14:28:39 --- Demo done ---
+14:29:23 Crashing node id 5001 

@@ -1,0 +1,1 @@
+wt.exe go run .\server\server.go 0 `;wt.exe go run .\server\server.go 1 `;wt.exe go run .\server\server.go 2 `; wt.exe go run .\client\client.go `; wt.exe go run .\client\client.go `;

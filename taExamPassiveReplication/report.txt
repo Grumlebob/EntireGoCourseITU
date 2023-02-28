@@ -1,0 +1,88 @@
+I hereby declare that this submission was created in its entirety by me and only me.
+I have recycled structural code from Mini Project 3 - Distributed Systems
+
+multiple choice:
+q1: Assume that a blockchain network has been attacked, and that at least 40% of the nodes have Byzantine faults. What is correct
+a1: We don't know if the Byzantine generals problem can be solved for this particular network. (I assume the network could have less than 4 nodes)
+
+q2: The Token Ring distributed mutual exclusion algorithm on N Nodes
+a2: has a continuos bandwidth consumption
+
+q3: The happened before relation
+a3: is transitive
+
+q4: In a network
+a4: that is synchronous, messages always arrive with progation delay at most D
+
+q5: A design goal for Microservices is
+a5: internal implementation details are hidden
+
+q6: We definitely have a deadlock when
+a6: a process P1 has a lock on a resource A while waiting to get a lock on another resource B;
+    and, at the same time a process P2 has a lock on resource B while waiting to get a lock on resource A
+
+q7: The TCP protocol
+a7: guarantees that messages are delivered in the order they were sent
+
+q8: In the Raft consensus algorithm
+a8: the leader uses the heartbeat for notifying it is still alive and for sending updates about the log
+
+q9: Sequential Consistency does not imply that
+a9: requests from all clients are processed in the same order that they were received
+
+q10: An operation is idempotent when
+a10: applying it several consecutive times yields the same result
+
+implementation:
+is in the Replication folder, to run please read the README
+to test crash you can try stopping one of the docker containers for the nodes,
+the client(s) should only pause for a while then resume :)
+
+I do not know if it works on Windows, I have only tested on linux.
+
+implementation discussion:
+1.  What system model are you assuming in your implementation. Write a full description:
+    I am assuming a system model with only crash failures.
+    I won't assume that nodes can recover after crashes, a new one would have to be started up and state somehow transferred.
+    i will assume an asynchronous network and thus i can not assume any upper bound on latency.
+
+2.  What is the minimal number of nodes in your system to fulfill the requirements? Why?
+    I need at least 2 replication nodes otherwise there is no replication and if there is no replication my system
+    can not withstand crash failures.
+    if there is 2 or more nodes i can tolerate at least 1 failure:
+    if the leader crashes an election is held (based on order in ports) and we carry on as usual with new leader
+    if a follower crashes any clients trying to connect to the follower will time out and try the next node
+    (based on ports)
+
+3.  Explain how your system recovers from crash failure.
+    if a clients request times out the node it requested something from is presumed to have crashed and it will try to
+    request from a different node (replica).
+    if a follower node can not connect to the leader, the leader is presumed crashed as we assume there are no network
+    partitions, and an election is held (according to ports).
+
+    nothing is done(at least programmatically) to recover the failed node in either case
+
+4.  Explain how you achieve the Property 1 requirement.
+    since i use a map as the underlying datastructure and it in itself overholds the repeatable read property i just
+    have to ensure i always read from the same map or all the maps i could read from are syncronised.
+    I do this by sending all the requests though the leader and so we always use the leaders map, until it crashes. then
+    we use the new elected leader that has been kept up to date by the previous leader forwarding
+    the changes to replicas.
+
+5.  Explain how you achieve the Property 2 requirement.
+    I do nothing different, since the underlying datastructure is a map and (in go at least) it will return 0 if the
+    key is not in the map by default.
+
+6.  Explain how you achieve the Property 3 requirement.
+    The requests all flow though the leader and so it just has to look up in the map(which should be consistent assuming
+    no puts) and return what is in there. The map is of cause replicated to the followers such that all state is not
+    lost with a leader crash and the get request can simply be resend after any timeout and the new leader will respond.
+
+7.  Explain how you achieve the Property 4 - Liveness requirement.
+    If a request fails (time out or return false etc.) the client can just retry and eventually a new leader will have
+    been elected and be ready to respond, since we only assume 1 crash failure and we have at least 2 nodes.
+
+8.  Explain how you achieve the Property 5 - Reliability requirement.
+    I have multiple nodes replicating the leader nodes state, one of them can take over if the leader crashes and all
+    of them can respond to a request so if the one a client is requesting from times out the client can just try
+    another.
